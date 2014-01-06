@@ -18,11 +18,11 @@
 @property (weak, nonatomic) IBOutlet UISegmentedControl *tipControl;
 - (IBAction)onTap:(id)sender;
 
+@property (nonatomic, strong) TipPercentStorage *tipPercentStorage;
+
 @end
 
-@implementation TipViewController{
-    TipPercentStorage *tipPercentStorage;
-}
+@implementation TipViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -30,7 +30,7 @@
     if (self) {
         // Custom initialization
         self.title = @"Tip Calculator";
-        tipPercentStorage = [[TipPercentStorage alloc] init];
+        self.tipPercentStorage = [[TipPercentStorage alloc] init];
     }
     return self;
 }
@@ -46,10 +46,10 @@
     [super viewWillAppear:animated];
 
     //refresh from storage and update segmentedcontrol views with percentages
-    [tipPercentStorage loadValueFromUserDefaults];
-    [self.tipControl setTitle: [NSString stringWithFormat:@"%d", tipPercentStorage.defaultTipPercent ] forSegmentAtIndex:0];
-    [self.tipControl setTitle: [NSString stringWithFormat:@"%d", tipPercentStorage.secondTipPercent ] forSegmentAtIndex:1];
-    [self.tipControl setTitle: [NSString stringWithFormat:@"%d", tipPercentStorage.thirdTipPercent ] forSegmentAtIndex:2];
+    [self.tipPercentStorage loadValueFromUserDefaults];
+    [self.tipControl setTitle: [NSString stringWithFormat:@"%d", self.tipPercentStorage.defaultTipPercent ] forSegmentAtIndex:0];
+    [self.tipControl setTitle: [NSString stringWithFormat:@"%d", self.tipPercentStorage.secondTipPercent ] forSegmentAtIndex:1];
+    [self.tipControl setTitle: [NSString stringWithFormat:@"%d", self.tipPercentStorage.thirdTipPercent ] forSegmentAtIndex:2];
     
     [self updateValues];
     
@@ -70,7 +70,7 @@
 //recalculate the total and display
 - (void) updateValues{
     float billAmount = [self.billTextField.text floatValue];
-    NSArray *tipValues = @[@(tipPercentStorage.defaultTipPercent/100.0), @(tipPercentStorage.secondTipPercent/100.0), @(tipPercentStorage.thirdTipPercent/100.0)];
+    NSArray *tipValues = @[@(self.tipPercentStorage.defaultTipPercent/100.0), @(self.tipPercentStorage.secondTipPercent/100.0), @(self.tipPercentStorage.thirdTipPercent/100.0)];
     float tipAmount = billAmount * [tipValues[self.tipControl.selectedSegmentIndex] floatValue];
     float totalAmount = tipAmount + billAmount;
     self.tipLabel.text = [NSString stringWithFormat:@"$%0.2f", tipAmount];
